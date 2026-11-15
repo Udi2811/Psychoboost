@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PsychoBoost 720+ | קורס פסיכומטרי אינטראקטיבי</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <canvas id="bg" aria-hidden="true"></canvas>
+
+  <div class="app">
+    <aside class="sidebar">
+      <a href="#/" class="logo">
+        <span class="logo-mark">Ψ</span>
+        <span class="logo-text">Psycho<b>Boost</b><small>720+</small></span>
+      </a>
+      <nav class="nav">
+        <a href="#/" data-route=""><span>🏠</span>לוח בקרה</a>
+        <a href="#/course" data-route="course"><span>🎓</span>הקורס</a>
+        <a href="#/practice" data-route="practice"><span>⚡</span>תרגול חכם</a>
+        <a href="#/exams" data-route="exams"><span>⏱️</span>מבחנים לדוגמה</a>
+        <a href="#/writing" data-route="writing"><span>✍️</span>סדנת כתיבה</a>
+        <a href="#/cards" data-route="cards"><span>🃏</span>כרטיסיות</a>
+        <a href="#/print" data-route="print"><span>🖨️</span>להדפסה</a>
+        <a href="#/break" data-route="break" class="nav-break"><span>☕</span>פינת ההפסקה</a>
+        <a href="#/resources" data-route="resources"><span>🔗</span>מקורות וסרטונים</a>
+      </nav>
+      <div class="coffee-widget" id="coffeeWidget" title="תזכורת להפסקת קפה">
+        <div class="coffee-cup"><div class="steam"></div>☕</div>
+        <div>
+          <div class="cw-label">הפסקת קפה בעוד</div>
+          <div class="cw-time" id="coffeeTime">--:--</div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="greet" id="greet"></div>
+        <div class="stats-bar">
+          <div class="pill" title="רצף ימי לימוד"><span>🔥</span><b id="streak">0</b></div>
+          <div class="level-box" title="רמה ונקודות ניסיון">
+            <div class="level-title" id="levelTitle"></div>
+            <div class="xp-bar"><div class="xp-fill" id="xpFill"></div></div>
+          </div>
+          <button class="icon-btn" id="settingsBtn" aria-label="הגדרות">⚙️</button>
+        </div>
+      </header>
+      <section id="view" class="view" tabindex="-1"></section>
+    </main>
+  </div>
+
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <button class="modal-close" id="modalClose" aria-label="סגור">✕</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+  <canvas id="confetti" aria-hidden="true"></canvas>
+
+  <script src="assets/data.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>
