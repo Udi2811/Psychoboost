@@ -47,7 +47,9 @@
     if (S.streak > 1) toast(`🔥 ${S.streak} ימים ברצף! התמדה = הצלחה`, 'gold');
   }
 
-  const LEVELS = ['מתחיל/ה 🌱', 'חוקר/ת 🔍', 'פותר/ת 🧩', 'אסטרטג/ית ♟️', 'מומחה/ית 🎯', 'אלוף/ת 700 🥇', 'מאסטר 720+ 🏆', 'אגדה 800 👑'];
+  const TARGET = 780;
+  const PACE = 60; // שניות לשאלה: פרק של 20 דקות ≈ 20 שאלות
+  const LEVELS = ['מתחיל/ה 🌱', 'חוקר/ת 🔍', 'פותר/ת 🧩', 'אסטרטג/ית ♟️', 'מומחה/ית 🎯', 'אלוף/ת 750 🥇', 'מאסטר 780+ 🏆', 'אגדה 800 👑'];
   const XP_PER_LEVEL = 250;
   const levelOf = xp => Math.min(Math.floor(xp / XP_PER_LEVEL), LEVELS.length - 1);
 
@@ -61,7 +63,7 @@
       sound('level');
       openModal(`<div class="big-emoji">🏆</div><h2 style="text-align:center">${esc(S.name)}, עלית רמה!</h2>
         <p style="text-align:center;font-size:20px">את/ה עכשיו <b class="grad-text">${LEVELS[after]}</b></p>
-        <p class="muted" style="text-align:center">כל רמה מקרבת אותך לציון 720+. ממשיכים!</p>`);
+        <p class="muted" style="text-align:center">כל רמה מקרבת אותך לציון ${TARGET}+. ממשיכים!</p>`);
     }
   }
 
@@ -168,7 +170,7 @@
       sound('good');
       if (combo > 0 && combo % 5 === 0) {
         confetti(160);
-        toast(`🔥 ${combo} תשובות נכונות ברצף! ככה מגיעים ל-720+`, 'gold', 3500);
+        toast(`🔥 ${combo} תשובות נכונות ברצף! ככה מגיעים ל-${TARGET}+`, 'gold', 3500);
       } else {
         confetti(40);
         toast(`${S.name}, ${rand(PRAISE)}`, 'good');
@@ -212,7 +214,7 @@
   function gauge(score) {
     const r = 95, C = 2 * Math.PI * r;
     const frac = score ? Math.max(0, Math.min(1, (score - 200) / 600)) : 0;
-    const t = 2 * Math.PI * (520 / 600);
+    const t = 2 * Math.PI * ((TARGET - 200) / 600);
     const tx = 110 + r * Math.cos(t), ty = 110 + r * Math.sin(t);
     return `<div class="gauge-wrap">
       <svg viewBox="0 0 220 220">
@@ -220,9 +222,9 @@
         <circle cx="110" cy="110" r="${r}" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="16"/>
         <circle id="gArc" cx="110" cy="110" r="${r}" fill="none" stroke="url(#gg)" stroke-width="16" stroke-linecap="round"
           stroke-dasharray="0 ${C}" data-dash="${C * frac}" data-c="${C}" style="transition:stroke-dasharray 1.4s cubic-bezier(.2,.9,.3,1)"/>
-        <circle cx="${tx}" cy="${ty}" r="7" fill="#ffc94d"><title>יעד 720</title></circle>
+        <circle cx="${tx}" cy="${ty}" r="7" fill="#ffc94d"><title>יעד ${TARGET}</title></circle>
       </svg>
-      <div class="gauge-center"><div class="num grad-text">${score || '—'}</div><div class="lbl">${score ? 'ציון משוער' : 'פתרו 5+ שאלות בכל תחום'}</div><div class="lbl" style="color:var(--gold)">● יעד: 720</div></div>
+      <div class="gauge-center"><div class="num grad-text">${score || '—'}</div><div class="lbl">${score ? 'ציון משוער' : 'פתרו 5+ שאלות בכל תחום'}</div><div class="lbl" style="color:var(--gold)">● יעד: ${TARGET}</div></div>
     </div>`;
   }
   function animateGauge() {
@@ -241,11 +243,11 @@
       .filter(x => x.s.total)
       .sort((a, b) => (a.s.acc ?? -1) - (b.s.acc ?? -1))[0];
     const hal = HALACHOT[dayOfYear() % HALACHOT.length];
-    const gap = est ? 720 - est.G : null;
+    const gap = est ? TARGET - est.G : null;
 
     view.innerHTML = `
       <div class="hero">
-        <h1>הדרך שלך ל-<span class="grad-text">720+</span> מתחילה כאן</h1>
+        <h1>הדרך שלך ל-<span class="grad-text">${TARGET}+</span> מתחילה כאן</h1>
         <p>קורס פסיכומטרי אינטראקטיבי: שיעורים, טריקים, סרטונים, תרגול חכם שמתמקד בנקודות החולשה, מבחנים לדוגמה עם טיימר – וגם הפסקות קפה 😉</p>
         <div class="row mt">
           <a class="btn" href="#/practice">⚡ תרגול חכם עכשיו</a>
@@ -259,7 +261,7 @@
           <p style="text-align:center;margin:10px 0 0">${est
             ? (gap <= 0 ? `🏆 את/ה מעל היעד! מילולי ≈ ${est.V} · כמותי ≈ ${est.Q}` : `עוד <b>${gap}</b> נקודות ליעד · מילולי ≈ ${est.V} · כמותי ≈ ${est.Q}`)
             : 'הציון המשוער יחושב לפי אחוזי ההצלחה שלך בתרגול.'}</p>
-          <p class="muted" style="text-align:center;font-size:12px">הערכה בלבד – לא חישוב רשמי של מאל"ו. לציון ~720 נדרשת הצלחה של כ-85%-90%.</p>
+          <p class="muted" style="text-align:center;font-size:12px">הערכה בלבד – לא חישוב רשמי של מאל"ו. לציון ~${TARGET} נדרשת הצלחה של כ-95% ומעלה, בקצב של כדקה לשאלה.</p>
         </div>
         <div class="grid g4" style="align-content:start">
           <div class="card stat-card"><div class="num grad-text">${all.seen}</div><div class="lbl">שאלות שנפתרו מתוך ${all.total}</div></div>
@@ -397,26 +399,40 @@
   }
 
   function runQuiz(container, qs, opts = {}) {
-    let idx = 0, right = 0;
+    let idx = 0, right = 0, qTimer = null, totalSec = 0, slow = 0;
+    const stopQ = () => { clearInterval(qTimer); qTimer = null; };
+    onLeave(stopQ);
     const show = () => {
+      stopQ();
       if (idx >= qs.length) return finish();
       const q = qs[idx], t = topicById(q.t);
       container.innerHTML = `
         <div class="bar" style="margin-bottom:14px"><div style="width:${idx / qs.length * 100}%;background:var(--grad)"></div></div>
         <div class="card q-card">
-          <div class="q-meta"><span>שאלה ${idx + 1} מתוך ${qs.length}</span><span>${t.icon} ${t.title}</span></div>
+          <div class="q-meta"><span>שאלה ${idx + 1} מתוך ${qs.length}${q.d === 3 ? ' · <b style="color:var(--pink)">🔥 רמת 780+</b>' : ''}</span><span class="pace" id="pace">⏱️ 0:00 / 1:00</span><span>${t.icon} ${t.title}</span></div>
           <div class="q-text"${isEn(q) ? ' dir="ltr"' : ''}>${q.q}</div>
           <div class="opts">${optButtons(q)}</div>
           <div id="afterQ"></div>
         </div>`;
+      let sec = 0;
+      qTimer = setInterval(() => {
+        sec++;
+        const el = $('#pace', container); if (!el) return stopQ();
+        el.textContent = `⏱️ ${fmtTime(sec).replace(/^0/, '')} / 1:00`;
+        el.classList.toggle('over', sec > PACE);
+      }, 1000);
       $$('.opt', container).forEach(b => b.addEventListener('click', () => {
+        stopQ();
+        totalSec += sec;
+        if (sec > PACE) slow++;
         const pick = +b.dataset.i, ok = pick === q.a;
         $$('.opt', container).forEach((x, i) => { x.disabled = true; if (i === q.a) x.classList.add('correct'); });
         if (!ok) b.classList.add('wrong');
         if (ok) right++;
         record(q, ok); reward(ok);
+        const paceMsg = sec <= PACE ? `⏱️ ${sec} שניות – בקצב מבחן ✅` : `⏱️ ${sec} שניות – מעל קצב המבחן (כדקה לשאלה). נסו את הטריק מהשיעור ⚠️`;
         $('#afterQ', container).innerHTML = `
-          <div class="explain ${ok ? '' : 'bad'}"><div class="feedback-badge">${ok ? '✔ נכון!' : '✖ התשובה הנכונה: ' + (q.a + 1)}</div>${q.e}</div>
+          <div class="explain ${ok ? '' : 'bad'}"><div class="feedback-badge">${ok ? '✔ נכון!' : '✖ התשובה הנכונה: ' + (q.a + 1)}</div>${q.e}<div class="muted" style="margin-top:8px;font-size:14px">${paceMsg}</div></div>
           <div class="row mt"><button class="btn" id="nextQ">${idx + 1 < qs.length ? 'לשאלה הבאה ←' : 'לסיכום 🏁'}</button></div>`;
         $('#nextQ', container).onclick = () => { idx++; show(); };
         $('#nextQ', container).focus();
@@ -424,19 +440,25 @@
     };
     const finish = () => {
       const pct = Math.round(right / qs.length * 100);
-      const msg = pct >= 90 ? ['🏆', 'רמה של 720+! מדהים!'] : pct >= 75 ? ['🚀', 'מצוין! עוד קצת ואת/ה ב-720'] : pct >= 50 ? ['💪', 'כיוון טוב – חזרו על הטריקים ותרגלו שוב'] : ['🌱', 'כל התחלה קשה. קראו שוב את ההסבר ונסו שוב – תראו שיפור!'];
-      if (pct >= 90) confetti(200);
+      const avg = Math.round(totalSec / qs.length);
+      const msg = pct >= 95 && avg <= PACE ? ['🏆', `רמה של ${TARGET}+! מדויק ומהיר – מדהים!`]
+        : pct >= 95 ? ['⚡', `דיוק של ${TARGET}+! עכשיו נעבוד על המהירות – כדקה לשאלה.`]
+        : pct >= 85 ? ['🚀', `מצוין! עוד קצת דיוק ואת/ה ב-${TARGET}`]
+        : pct >= 60 ? ['💪', 'כיוון טוב – חזרו על הטריקים ותרגלו שוב']
+        : ['🌱', 'כל התחלה קשה. קראו שוב את ההסבר ונסו שוב – תראו שיפור!'];
+      if (pct >= 95) confetti(200);
       addXP(pct === 100 ? 30 : 10);
       container.innerHTML = `<div class="card" style="text-align:center">
         <div class="big-emoji">${msg[0]}</div>
         <h2>${right} / ${qs.length} נכונות (${pct}%)</h2>
         <p style="font-size:18px">${msg[1]}</p>
+        <p class="muted">⏱️ ממוצע ${avg} שניות לשאלה (יעד: עד ${PACE}) · ${slow} שאלות מעל הקצב</p>
         <div class="row" style="justify-content:center">
           <button class="btn" id="again">🔁 שוב</button>
           <a class="btn alt" href="#/practice">⚡ תרגול חכם</a>
           <a class="btn ghost" href="#/break">☕ הפסקה</a>
         </div></div>`;
-      $('#again').onclick = () => { idx = 0; right = 0; qs = shuffle(qs); show(); };
+      $('#again').onclick = () => { idx = 0; right = 0; totalSec = 0; slow = 0; qs = shuffle(qs); show(); };
       opts.onDone && opts.onDone(right, qs.length);
     };
     show();
@@ -444,17 +466,19 @@
 
   function practice() {
     view.innerHTML = `<h1>⚡ תרגול חכם</h1>
-      <p class="muted">המערכת בוחרת שאלות לפי הביצועים שלך: שאלות חדשות ושאלות שטעית בהן מקבלות עדיפות – כך משתפרים הכי מהר.</p>
+      <p class="muted">המערכת בוחרת שאלות לפי הביצועים שלך: שאלות חדשות ושאלות שטעית בהן מקבלות עדיפות. לכל שאלה יש שעון קצב – במבחן האמיתי יש כדקה לשאלה (פרק של 20 דקות). ל-${TARGET}+ צריך גם דיוק וגם מהירות.</p>
       <div class="card row">
         <label>תחום <select id="pDom"><option value="all">הכול</option>${Object.entries(DOMAINS).map(([d, D]) => `<option value="${d}">${D.icon} ${D.title}</option>`).join('')}</select></label>
         <label>כמות <select id="pCnt"><option>5</option><option selected>10</option><option>15</option><option>20</option></select></label>
         <label>מצב <select id="pMode"><option value="smart">🧠 חכם (מותאם אישית)</option><option value="random">🎲 אקראי</option><option value="mistakes">🔁 רק טעויות</option></select></label>
+        <label>רמה <select id="pLvl"><option value="all">הכול</option><option value="hard">🔥 רמת 780+ בלבד</option><option value="base">בסיס ובינוני</option></select></label>
         <span class="spacer"></span><button class="btn" id="pGo">התחל ←</button>
       </div>
       <div id="pBody" class="mt"></div>`;
     $('#pGo').onclick = () => {
-      const d = $('#pDom').value, n = +$('#pCnt').value, mode = $('#pMode').value;
-      let pool = QUESTIONS.filter(q => (d === 'all' || domainOf(q) === d) && q.t !== 'v-writing');
+      const d = $('#pDom').value, n = +$('#pCnt').value, mode = $('#pMode').value, lvl = $('#pLvl').value;
+      let pool = QUESTIONS.filter(q => (d === 'all' || domainOf(q) === d) && q.t !== 'v-writing'
+        && (lvl === 'all' || (lvl === 'hard') === (q.d === 3)));
       if (mode === 'mistakes') {
         pool = pool.filter(q => S.answers[q.id] && S.answers[q.id].last === false);
         if (!pool.length) return toast('אין טעויות פתוחות – כל הכבוד! 🎉', 'good');
@@ -479,29 +503,58 @@
   function buildExam(id) {
     const pool = d => QUESTIONS.filter(q => domainOf(q) === d && q.t !== 'v-writing');
     const ch = (title, domain, qs, minutes) => ({ title, domain, qs, minutes });
-    const sortByTopic = qs => qs.sort((a, b) => TOPICS.findIndex(t => t.id === a.t) - TOPICS.findIndex(t => t.id === b.t));
+    const ti = q => TOPICS.findIndex(t => t.id === q.t);
+    // כמו במבחן: מקובץ לפי סוג שאלה, ובתוך כל סוג בסדר קושי עולה
+    const order = qs => qs.sort((a, b) => ti(a) - ti(b) || (a.d || 1) - (b.d || 1) || QUESTIONS.indexOf(a) - QUESTIONS.indexOf(b));
+    const draw = (d, n, rnd, hardShare, chapters = 1) => {
+      const all = pool(d);
+      const hard = shuffle(all.filter(q => q.d === 3), rnd), base = shuffle(all.filter(q => q.d !== 3), rnd);
+      const nh = Math.round(n * hardShare), nb = n - nh;
+      return Array.from({ length: chapters }, (_, c) => order([...hard.slice(c * nh, (c + 1) * nh), ...base.slice(c * nb, (c + 1) * nb)]));
+    };
+    if (id === 'F') {
+      const rnd = mulberry32(41);
+      const [v1, v2] = draw('verbal', 20, rnd, 0.5, 2), [q1, q2] = draw('quant', 20, rnd, 0.4, 2);
+      return {
+        id, title: 'סימולציה מלאה',
+        chapters: [
+          { title: 'פרק 1 – מטלת כתיבה', type: 'writing', domain: 'verbal', qs: [], minutes: 30, prompt: ESSAY_PROMPTS[Math.floor(rnd() * ESSAY_PROMPTS.length)] },
+          ch('פרק 2 – חשיבה מילולית', 'verbal', v1, 20),
+          ch('פרק 3 – חשיבה כמותית', 'quant', q1, 20),
+          ch('פרק 4 – חשיבה מילולית', 'verbal', v2, 20),
+          ch('פרק 5 – חשיבה כמותית', 'quant', q2, 20)
+        ]
+      };
+    }
     if (id === 'A' || id === 'B') {
       const rnd = mulberry32(id === 'A' ? 11 : 29);
       return {
         id, title: `סימולציה ${id === 'A' ? 'א' : 'ב'}`,
         chapters: [
-          ch('פרק 1 – חשיבה מילולית', 'verbal', sortByTopic(shuffle(pool('verbal'), rnd).slice(0, 12)), 15),
-          ch('פרק 2 – חשיבה כמותית', 'quant', sortByTopic(shuffle(pool('quant'), rnd).slice(0, 12)), 15)
+          ch('פרק 1 – חשיבה מילולית', 'verbal', draw('verbal', 20, rnd, 0.5)[0], 20),
+          ch('פרק 2 – חשיבה כמותית', 'quant', draw('quant', 20, rnd, 0.4)[0], 20)
         ]
       };
     }
+    if (id === 'H') {
+      const rnd = mulberry32(780);
+      const qs = [...draw('verbal', 10, rnd, 1)[0], ...draw('quant', 10, rnd, 1)[0]];
+      return { id, title: `אתגר ${TARGET}+`, chapters: [ch(`אתגר ${TARGET}+ – שאלות קשות בלבד`, 'mixed', qs, 20)] };
+    }
     if (id === 'E') {
-      return { id, title: 'מבחן אנגלית (הכנה לאמירנט)', chapters: [ch('English', 'english', sortByTopic(shuffle(pool('english'), mulberry32(7)).slice(0, 12)), 15)] };
+      return { id, title: 'מבחן אנגלית (הכנה לאמירנט)', chapters: [ch('English', 'english', draw('english', 20, mulberry32(7), 0.3)[0], 20)] };
     }
     const rq = shuffle(QUESTIONS.filter(q => q.t !== 'v-writing' && domainOf(q) !== 'english')).slice(0, 10);
     return { id: 'Q', title: 'מבחן בזק', chapters: [ch('מבחן בזק – מעורב', 'mixed', rq, 10)] };
   }
 
   const EXAM_LIST = [
-    ['A', '🅰️', 'סימולציה א', '12 שאלות מילולי + 12 כמותי · 2 פרקים × 15 דק\''],
-    ['B', '🅱️', 'סימולציה ב', 'סט שאלות אחר · אותו מבנה'],
+    ['F', '🏁', 'סימולציה מלאה', 'כמו המבחן: מטלת כתיבה 30 דקות + 4 פרקים × 20 שאלות × 20 דקות'],
+    ['A', '🅰️', 'סימולציה א', 'פרק מילולי + פרק כמותי · 20 שאלות ב-20 דקות כל פרק'],
+    ['B', '🅱️', 'סימולציה ב', 'סט שאלות אחר · אותו מבנה ואותם זמנים'],
+    ['H', '🔥', `אתגר ${TARGET}+`, '20 שאלות ברמה הקשה ביותר · 20 דקות'],
     ['Q', '⚡', 'מבחן בזק', '10 שאלות מעורבות · 10 דקות · משתנה בכל פעם'],
-    ['E', '🌍', 'אנגלית (אמירנט)', '12 שאלות · 15 דקות']
+    ['E', '🌍', 'אנגלית (אמירנט)', '20 שאלות · 20 דקות']
   ];
 
   function exams() {
@@ -515,6 +568,7 @@
           <li>ציון כל תחום: 50–150. הציון הכללי: 200–800, במשקל שווה למילולי ולכמותי. מטלת הכתיבה = 25% מהציון המילולי.</li>
           <li>אין ניקוד שלילי – כל תשובה נכונה = נקודה. <b>אף פעם לא משאירים שאלה ריקה!</b></li>
         </ul>
+        <div class="example"><b>🎯 מה צריך ל-${TARGET}+?</b> כ-95% תשובות נכונות בפרקים – כלומר לכל היותר טעות אחת בפרק – בקצב של כדקה לשאלה, וחיבור ברמה גבוהה. הסימולציות כאן כוללות 40%-50% שאלות קשות 🔥, והשאלות מסודרות בכל סוג מהקל לקשה – כמו במבחן.</div>
       </div>
       <div class="grid g4 mt">${EXAM_LIST.map(([id, ic, t, d]) => `
         <div class="card topic-card" style="--accent:var(--violet)"><div class="t-ico">${ic}</div><h4>${t}</h4><p>${d}</p>
@@ -532,13 +586,47 @@
     const E = buildExam(id);
     const answers = E.chapters.map(c => Array(c.qs.length).fill(null));
     const flags = E.chapters.map(c => Array(c.qs.length).fill(false));
-    let ci = 0, left = 0, timer = null;
+    let ci = 0, left = 0, timer = null, essay = '';
+    const used = E.chapters.map(() => 0);
     const stop = () => { clearInterval(timer); timer = null; };
     onLeave(stop);
+
+    const startTimer = () => {
+      stop();
+      timer = setInterval(() => {
+        left--;
+        const el = $('#tmr'); if (!el) return stop();
+        el.textContent = fmtTime(Math.max(left, 0));
+        el.classList.toggle('warn', left <= 60);
+        if (left === 60) toast('⏰ נותרה דקה אחת!', 'bad', 4000);
+        if (left <= 0) { toast('⌛ הזמן לפרק הסתיים', 'bad'); nextChapter(); }
+      }, 1000);
+    };
+
+    const renderWriting = C => {
+      view.innerHTML = `
+        <div class="progress-top"><div class="row">
+          <h2 style="margin:0">${E.title} · ${C.title}</h2><span class="spacer"></span>
+          <div class="timer" id="tmr">${fmtTime(left)}</div></div></div>
+        <div class="card"><div class="example">${esc(C.prompt)}</div>
+          <p class="muted">לפחות 25 שורות, סגנון עיוני. מומלץ: 5 דק' תכנון · 21 דק' כתיבה · 4 דק' הגהה.</p>
+          <textarea class="essay" id="exEssay" placeholder="כתבו כאן את החיבור..."></textarea>
+          <div class="row mt"><span class="muted" id="exCount">0 מילים</span><span class="spacer"></span><button class="btn" id="endCh">סיימתי – לפרק הבא ←</button></div></div>`;
+      const ta = $('#exEssay');
+      ta.value = essay;
+      ta.addEventListener('input', () => {
+        essay = ta.value;
+        const w = essay.trim() ? essay.trim().split(/\s+/).length : 0;
+        $('#exCount').textContent = `${w} מילים · ≈ ${Math.round(w / 9)} שורות (יעד: 25+)`;
+      });
+      $('#endCh').onclick = () => nextChapter();
+      startTimer();
+    };
 
     const renderChapter = () => {
       const C = E.chapters[ci];
       left = C.minutes * 60;
+      if (C.type === 'writing') return renderWriting(C);
       view.innerHTML = `
         <div class="progress-top"><div class="row">
           <h2 style="margin:0">${E.title} · ${C.title}</h2><span class="spacer"></span>
@@ -573,19 +661,12 @@
         if (empty && !confirm(`נשארו ${empty} שאלות ללא תשובה. אין ניקוד שלילי – כדאי לנחש! להגיש בכל זאת?`)) return;
         nextChapter();
       };
-      stop();
-      timer = setInterval(() => {
-        left--;
-        const el = $('#tmr'); if (!el) return stop();
-        el.textContent = fmtTime(Math.max(left, 0));
-        el.classList.toggle('warn', left <= 60);
-        if (left === 60) toast('⏰ נותרה דקה אחת – סמנו תשובה בכל שאלה!', 'bad', 4000);
-        if (left <= 0) { toast('⌛ הזמן לפרק הסתיים', 'bad'); nextChapter(); }
-      }, 1000);
+      startTimer();
     };
 
     const nextChapter = () => {
       stop();
+      used[ci] = E.chapters[ci].minutes * 60 - Math.max(left, 0);
       if (++ci < E.chapters.length) {
         view.innerHTML = `<div class="card" style="text-align:center;max-width:620px;margin:40px auto"><div class="big-emoji">⏸️</div><h2>סוף ${E.chapters[ci - 1].title}</h2><p>נשמו עמוק – הפרק הבא מתחיל כשתלחצו.</p><button class="btn" id="goNext">התחל את ${E.chapters[ci].title}</button></div>`;
         $('#goNext').onclick = renderChapter;
@@ -609,14 +690,18 @@
       S.exams.push({ date: localDay(), id, title: E.title, right, total, score: G ?? (pct + '%') });
       addXP(right * 5);
       save();
-      const top = G != null ? G >= 720 : pct >= 87;
+      const top = G != null ? G >= TARGET : pct >= 95;
+      const essayLines = Math.round((essay.trim() ? essay.trim().split(/\s+/).length : 0) / 9);
+      const hasWriting = E.chapters.some(c => c.type === 'writing');
       if (top) { confetti(300); sound('level'); setTimeout(() => confetti(200), 600); }
 
       view.innerHTML = `
         <div class="hero" style="text-align:center">
           <div class="big-emoji">${top ? '🏆' : pct >= 70 ? '🚀' : '💪'}</div>
           <h1>${G != null ? `ציון משוער: <span class="grad-text">${G}</span>` : `<span class="grad-text">${pct}%</span> הצלחה`}</h1>
-          <p style="margin:auto">${top ? 'מעל 720! זו רמה של הטופ – תמשיכו לשמור על הכושר!' : G != null ? `עוד ${720 - G} נקודות ליעד. תרגלו את הנושאים החלשים ונסו סימולציה נוספת.` : 'עבודה טובה! עברו על ההסברים למטה.'}</p>
+          <p style="margin:auto">${top ? `מעל ${TARGET}! זו רמה של האחוזון העליון – תמשיכו לשמור על הכושר!` : G != null ? `עוד ${TARGET - G} נקודות ליעד ${TARGET}. עברו על הטעויות, תרגלו ברמת 🔥 ונסו שוב.` : 'עבודה טובה! עברו על ההסברים למטה.'}</p>
+          <p class="muted">⏱️ זמנים: ${E.chapters.map((C, c) => `${C.title.split(' – ')[0]}: ${fmtTime(used[c])} מתוך ${C.minutes}:00`).join(' · ')}</p>
+          ${hasWriting ? `<p>✍️ מטלת כתיבה: ≈ ${essayLines} שורות ${essayLines >= 25 ? '✅' : '❌ (נדרשות 25+)'} – בדקו אותה לפי רשימת הבדיקה ב<a href="#/writing">סדנת הכתיבה</a>.</p>` : ''}
           <div class="grid g3 mt" style="max-width:700px;margin-inline:auto">
             ${Object.entries(per).filter(([, v]) => v[1]).map(([d, v]) => `<div class="card stat-card"><div class="num">${v[0]}/${v[1]}</div><div class="lbl">${DOMAINS[d].title}${d === 'verbal' && V ? ` · ≈${V}` : ''}${d === 'quant' && Q ? ` · ≈${Q}` : ''}</div></div>`).join('')}
           </div>
@@ -624,8 +709,8 @@
           <div class="row" style="justify-content:center"><a class="btn" href="#/exams">למבחנים</a><a class="btn alt" href="#/practice">תרגול חכם</a><a class="btn ghost" href="#/break">☕ מגיעה לך הפסקה</a></div>
         </div>
         <h2 class="mt">🔍 סקירת תשובות</h2>
-        ${E.chapters.map((C, c) => `<h3>${C.title}</h3>` + C.qs.map((q, i) => {
-          const a = answers[c][i], ok = a === q.a;
+        ${E.chapters.filter(C => C.qs.length).map(C => `<h3>${C.title}</h3>` + C.qs.map((q, i) => {
+          const a = answers[E.chapters.indexOf(C)][i], ok = a === q.a;
           return `<div class="card q-card"><div class="q-meta"><span>שאלה ${i + 1} · ${ok ? '✅ נכון' : a == null ? '⬜ לא נענתה' : '❌ שגוי'}</span><span>${topicById(q.t).title}</span></div>
             <div class="q-text"${isEn(q) ? ' dir="ltr"' : ''}>${q.q}</div>
             <div class="opts">${q.o.map((o, k) => `<div class="opt ${k === q.a ? 'correct' : k === a ? 'wrong' : ''}"${isEn(q) ? ' dir="ltr"' : ''}><span class="k">${k + 1}</span><span>${o}</span></div>`).join('')}</div>
@@ -635,8 +720,8 @@
 
     view.innerHTML = `<div class="card" style="text-align:center;max-width:620px;margin:40px auto">
       <div class="big-emoji">⏱️</div><h1>${E.title}</h1>
-      <p>${E.chapters.map(c => `${c.title}: ${c.qs.length} שאלות · ${c.minutes} דקות`).join('<br>')}</p>
-      <p class="muted">טיפ: עברו קודם על כל השאלות הקלות, סמנו 🚩 את הקשות וחזרו אליהן. אין ניקוד שלילי – תמיד לנחש!</p>
+      <p>${E.chapters.map(c => c.type === 'writing' ? `${c.title}: ${c.minutes} דקות` : `${c.title}: ${c.qs.length} שאלות · ${c.minutes} דקות`).join('<br>')}</p>
+      <p class="muted">קצב מבחן: כדקה לשאלה. עברו קודם על השאלות שאתם בטוחים בהן, סמנו 🚩 את הקשות וחזרו אליהן. אין ניקוד שלילי – תמיד לנחש!</p>
       <button class="btn" id="startExam">🚀 התחל מבחן</button></div>`;
     $('#startExam').onclick = renderChapter;
   }
@@ -759,32 +844,34 @@
   }
 
   // ---------- Printable ----------
-  function printView(sel = 'A') {
+  function printView(sel = 'F') {
     const options = [
-      ['A', 'סימולציה א'], ['B', 'סימולציה ב'], ['E', 'אנגלית (אמירנט)'],
+      ['F', 'סימולציה מלאה (כתיבה + 4 פרקים)'], ['A', 'סימולציה א'], ['B', 'סימולציה ב'], ['H', `אתגר ${TARGET}+`], ['E', 'אנגלית (אמירנט)'],
       ...TOPICS.filter(t => t.id !== 'v-writing').map(t => [`t:${t.id}`, `דף עבודה: ${t.title}`]),
       ['essay', 'דף מטלת כתיבה']
     ];
-    if (!options.some(o => o[0] === sel)) sel = 'A';
+    if (!options.some(o => o[0] === sel)) sel = 'F';
     let title, chapters;
     if (sel.startsWith('t:')) {
       const t = topicById(sel.slice(2));
       title = `דף עבודה – ${t.title}`;
-      chapters = [{ title: t.title, minutes: null, qs: QUESTIONS.filter(q => q.t === t.id) }];
+      chapters = [{ title: t.title, minutes: Math.max(5, QUESTIONS.filter(q => q.t === t.id).length), qs: QUESTIONS.filter(q => q.t === t.id) }];
     } else if (sel !== 'essay') {
       const E = buildExam(sel); title = E.title; chapters = E.chapters;
     }
     let num = 0;
     const header = t => `<div style="display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #8b5cff;padding-bottom:10px;margin-bottom:16px">
-      <div><h1 style="margin:0;font-size:26px">${t}</h1><div style="color:#666">PsychoBoost 720+ · חומר תרגול להדפסה</div></div>
+      <div><h1 style="margin:0;font-size:26px">${t}</h1><div style="color:#666">PsychoBoost ${TARGET}+ · חומר תרגול להדפסה</div></div>
       <div style="text-align:left;font-size:14px">שם: ______________<br>תאריך: ____________<br>ציון: ______</div></div>`;
     let doc;
     if (sel === 'essay') {
       doc = header('מטלת כתיבה') + ESSAY_PROMPTS.map((p, i) => `<div class="${i ? 'page-break' : ''}"><h3>נושא ${i + 1} (30 דקות, לפחות 25 שורות)</h3><p>${esc(p)}</p>
         ${'<div style="border-bottom:1px solid #bbb;height:30px"></div>'.repeat(28)}</div>`).join('');
     } else {
-      doc = header(title) + `<p><b>הוראות:</b> לכל שאלה ארבע תשובות; בחרו את הנכונה וסמנו בגיליון התשובות. אין ניקוד שלילי – ענו על כל השאלות.</p>` +
-        chapters.map(C => `<h2>${C.title}${C.minutes ? ` <small style="font-weight:400">(${C.minutes} דקות)</small>` : ''}</h2>` +
+      doc = header(title) + `<p><b>הוראות:</b> לכל שאלה ארבע תשובות; בחרו את הנכונה וסמנו בגיליון התשובות. הקפידו על הזמן המצוין לכל פרק (כדקה לשאלה) – שימו שעון על השולחן. אין ניקוד שלילי – ענו על כל השאלות.</p>` +
+        chapters.map(C => C.type === 'writing'
+          ? `<h2>${C.title} <small style="font-weight:400">(${C.minutes} דקות)</small></h2><p>${esc(C.prompt)}</p>${'<div style="border-bottom:1px solid #bbb;height:30px"></div>'.repeat(28)}<div class="page-break"></div>`
+          : `<h2>${C.title}${C.minutes ? ` <small style="font-weight:400">(${C.minutes} דקות)</small>` : ''}</h2>` +
           C.qs.map(q => `<div class="p-q"${isEn(q) ? ' dir="ltr"' : ''}><b>${++num}.</b> ${q.q}
             <div class="p-opts">${q.o.map((o, i) => `<div>(${i + 1}) ${o}</div>`).join('')}</div></div>`).join('')).join('') +
         `<div class="page-break"></div><h2>גיליון תשובות</h2><div class="bubbles">${Array.from({ length: num }, (_, i) => `<div><b>${i + 1}.</b> ${[1, 2, 3, 4].map(k => `<span>${k}</span>`).join('')}</div>`).join('')}</div>` +
@@ -985,9 +1072,9 @@
       <div class="card mt"><h3 style="margin-top:0">🎬 סרטונים לפי נושא</h3>
         <div class="grid g3">${TOPICS.map(t => `<div><b>${t.icon} ${t.title}</b><ul style="margin:6px 0">${t.videos.map(v => `<li><a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/results?search_query=${encodeURIComponent(v.q)}">${v.t}</a></li>`).join('')}</ul></div>`).join('')}</div>
       </div>
-      <div class="card mt"><h3 style="margin-top:0">🧭 אסטרטגיה ל-720+</h3>
+      <div class="card mt"><h3 style="margin-top:0">🧭 אסטרטגיה ל-${TARGET}+</h3>
         <div class="trick"><div class="n">1</div><div><b>אבחון:</b> התחילו בסימולציה כדי לדעת איפה אתם עומדים.</div></div>
-        <div class="trick"><div class="n">2</div><div><b>יסודות:</b> עברו על כל שיעור + טריקים. 720 דורש כמעט אפס טעויות בשאלות הקלות והבינוניות.</div></div>
+        <div class="trick"><div class="n">2</div><div><b>יסודות:</b> עברו על כל שיעור + טריקים. ${TARGET} דורש כ-95% דיוק – אפס טעויות בשאלות הקלות והבינוניות, ושליטה בשאלות 🔥 הקשות שבסוף כל סוג.</div></div>
         <div class="trick"><div class="n">3</div><div><b>תרגול חכם יומי:</b> 20-30 שאלות ביום במצב "חכם" – המערכת תתמקד בחולשות.</div></div>
         <div class="trick"><div class="n">4</div><div><b>ניהול זמן:</b> ~20 דקות לפרק. שאלה שלוקחת יותר מ-2 דקות – סמנו, דלגו וחזרו.</div></div>
         <div class="trick"><div class="n">5</div><div><b>חיבור:</b> לפחות חיבור אחד בשבוע בתנאי זמן אמיתיים – 25% מהציון המילולי!</div></div>
@@ -1001,7 +1088,7 @@
   // ================= Settings =================
   function openSettings(first = false) {
     openModal(`<h2>${first ? '👋 ברוכים הבאים ל-<bdi>PsychoBoost</bdi>!' : '⚙️ הגדרות'}</h2>
-      ${first ? '<p class="muted">כמה פרטים קטנים כדי שנתאים לך את הדרך ל-720+</p>' : ''}
+      ${first ? `<p class="muted">כמה פרטים קטנים כדי שנתאים לך את הדרך ל-${TARGET}+</p>` : ''}
       <div class="grid" style="gap:14px">
         <label>איך לקרוא לך?<br><input id="sName" style="width:100%" maxlength="30"></label>
         <label>תאריך המבחן שלך<br><input id="sDate" type="date" style="width:100%"></label>
@@ -1053,7 +1140,7 @@
   // ================= Animated background =================
   (function background() {
     const c = $('#bg'), ctx = c.getContext('2d');
-    const SYM = ['π', '√', '∑', 'x²', 'Ψ', '%', '∞', 'א', 'ב', 'A', '?', '=', '÷', '△', '○', '720', '∫', 'θ'];
+    const SYM = ['π', '√', '∑', 'x²', 'Ψ', '%', '∞', 'א', 'ב', 'A', '?', '=', '÷', '△', '○', '780', '∫', 'θ'];
     let items = [];
     const resize = () => {
       c.width = innerWidth; c.height = innerHeight;

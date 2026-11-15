@@ -175,6 +175,8 @@ a.tab { text-decoration: none; }
 /* ---------- Questions ---------- */
 .q-card { margin-bottom: 18px; }
 .q-meta { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+.pace { font-variant-numeric: tabular-nums; padding: 0 10px; border-radius: 8px; }
+.pace.over { color: var(--red); background: rgba(255,107,107,.12); font-weight: 700; }
 .q-text { font-size: 18px; margin-bottom: 14px; }
 .q-text .passage { font-size: 15px; background: rgba(0,0,0,.25); padding: 14px 18px; border-radius: 12px; max-height: 320px; overflow: auto; margin-bottom: 12px; }
 .data-table { border-collapse: collapse; margin: 8px 0 12px; min-width: 300px; }
