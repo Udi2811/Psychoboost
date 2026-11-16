@@ -12,11 +12,13 @@
   const topicById = id => TOPICS.find(t => t.id === id);
   const domainOf = q => topicById(q.t).domain;
   // Private book bank: only present on the local copy (private/ is never uploaded)
-  const BOOK_COUNT = (() => {
-    const bank = Array.isArray(window.PRIVATE_BANK) ? window.PRIVATE_BANK.filter(q => topicById(q.t)) : [];
-    QUESTIONS.push(...bank);
-    return bank.length;
-  })();
+  let BOOK_COUNT = 0;
+  const addBank = bank => {
+    const ok = (bank || []).filter(q => topicById(q.t) && !QUESTIONS.some(x => x.id === q.id));
+    QUESTIONS.push(...ok);
+    BOOK_COUNT += ok.length;
+  };
+  addBank(Array.isArray(window.PRIVATE_BANK) ? window.PRIVATE_BANK : []);
   const isBook = q => q.src === 'book';
   const bookTag = q => isBook(q) ? `<span class="book-tag">📘 ${esc(q.ch.replace(/^\d+\s*-\s*/, ''))} · ${esc(q.set)} · שאלה ${q.n}</span>` : '';
 
@@ -484,6 +486,10 @@
         <span class="spacer"></span><button class="btn" id="pGo">התחל ←</button>
       </div>
       <div id="pBody" class="mt"></div>`;
+    if (VAULT.meta && !VAULT.key) {
+      $('#pBody').innerHTML = `<div class="card row"><span style="font-size:28px">🔒</span><div>מאגר הספרים (${VAULT.meta.count} שאלות) נעול.</div><span class="spacer"></span><button class="btn small" id="pUnlock">פתיחה עם סיסמה</button></div>`;
+      $('#pUnlock').onclick = openVault;
+    }
     $('#pGo').onclick = () => {
       const d = $('#pDom').value, n = +$('#pCnt').value, mode = $('#pMode').value, lvl = $('#pLvl').value;
       const src = $('#pSrc') ? $('#pSrc').value : 'all';
@@ -1168,9 +1174,125 @@
     resize(); draw();
   })();
 
+  // ================= Encrypted book vault (public site) =================
+  // vault/ holds the book bank encrypted with AES-GCM; the key is derived from the user's password.
+  const VAULT = { meta: null, key: null, urls: new Map() };
+  const VAULT_KEY = KEY + '_vault';
+  const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+
+  async function vaultDecrypt(buf) {
+    const iv = new Uint8Array(buf, 0, 12);
+    return crypto.subtle.decrypt({ name: 'AES-GCM', iv }, VAULT.key, new Uint8Array(buf, 12));
+  }
+
+  async function vaultLoad(key) {
+    VAULT.key = key;
+    try {
+      const r = await fetch(`vault/bank.bin?v=${VAULT.meta.v}`);
+      const plain = await vaultDecrypt(await r.arrayBuffer());
+      addBank(JSON.parse(new TextDecoder().decode(plain)));
+      return true;
+    } catch {
+      VAULT.key = null;
+      return false;
+    }
+  }
+
+  async function vaultUnlock(pass, remember) {
+    const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveKey']);
+    const key = await crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt: b64(VAULT.meta.salt), iterations: VAULT.meta.iter, hash: 'SHA-256' },
+      base, { name: 'AES-GCM', length: 256 }, remember, ['decrypt']);
+    if (!(await vaultLoad(key))) return false;
+    if (remember) {
+      const raw = new Uint8Array(await crypto.subtle.exportKey('raw', key));
+      localStorage.setItem(VAULT_KEY, JSON.stringify({ v: VAULT.meta.salt, k: btoa(String.fromCharCode(...raw)) }));
+    }
+    return true;
+  }
+
+  async function resolveVaultImages() {
+    if (!VAULT.key) return;
+    const imgs = $$('img[data-vault]:not([data-done])');
+    await Promise.all(imgs.map(async img => {
+      img.dataset.done = '1';
+      const name = img.dataset.vault;
+      try {
+        let url = VAULT.urls.get(name);
+        if (!url) {
+          const r = await fetch(`vault/i/${name}.bin`);
+          url = URL.createObjectURL(new Blob([await vaultDecrypt(await r.arrayBuffer())], { type: 'image/jpeg' }));
+          VAULT.urls.set(name, url);
+        }
+        img.src = url;
+      } catch { delete img.dataset.done; }
+    }));
+  }
+  let resolveTimer = null;
+  new MutationObserver(() => { clearTimeout(resolveTimer); resolveTimer = setTimeout(resolveVaultImages, 30); })
+    .observe(document.body, { childList: true, subtree: true });
+
+  function openVault() {
+    openModal(`<div class="big-emoji">🔒</div><h2 style="text-align:center">פתיחת מאגר הספרים</h2>
+      <p class="muted" style="text-align:center">${VAULT.meta.count} שאלות מוצפנות. הסיסמה לא נשלחת לשום מקום – הפענוח נעשה בדפדפן.</p>
+      <div class="grid" style="gap:12px">
+        <input id="vPass" type="password" autocomplete="current-password" placeholder="סיסמה" style="width:100%">
+        <label class="check-item"><input type="checkbox" id="vRem"> זכור במכשיר הזה (רק במכשיר אישי)</label>
+        <button class="btn" id="vGo">פתח 🔓</button>
+      </div>`);
+    const go = async () => {
+      const btn = $('#vGo');
+      btn.disabled = true; btn.textContent = 'מפענח...';
+      const ok = await vaultUnlock($('#vPass').value, $('#vRem').checked);
+      if (ok) {
+        closeModal(); toast(`📘 נפתחו ${BOOK_COUNT} שאלות מהספרים`, 'good'); updateVaultBtn(); router();
+      } else {
+        btn.disabled = false; btn.textContent = 'פתח 🔓'; toast('סיסמה שגויה', 'bad');
+      }
+    };
+    $('#vGo').onclick = go;
+    $('#vPass').addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
+    $('#vPass').focus();
+  }
+
+  function updateVaultBtn() {
+    let btn = $('#vaultBtn');
+    if (!VAULT.meta) return;
+    if (!btn) {
+      btn = document.createElement('button');
+      btn.id = 'vaultBtn'; btn.className = 'icon-btn';
+      $('#settingsBtn').before(btn);
+    }
+    btn.textContent = VAULT.key ? '🔓' : '🔒';
+    btn.title = VAULT.key ? 'נעילת מאגר הספרים במכשיר זה' : 'פתיחת מאגר הספרים';
+    btn.onclick = () => {
+      if (!VAULT.key) return openVault();
+      localStorage.removeItem(VAULT_KEY);
+      location.reload();
+    };
+  }
+
+  async function initVault() {
+    if (BOOK_COUNT || !location.protocol.startsWith('http') || !window.crypto?.subtle) return;
+    try {
+      const r = await fetch('vault/meta.json', { cache: 'no-cache' });
+      if (!r.ok) return;
+      VAULT.meta = await r.json();
+    } catch { return; }
+    const saved = JSON.parse(localStorage.getItem(VAULT_KEY) || 'null');
+    if (saved && saved.v === VAULT.meta.salt) {
+      const key = await crypto.subtle.importKey('raw', b64(saved.k), 'AES-GCM', false, ['decrypt']);
+      if (await vaultLoad(key)) { router(); }
+      else localStorage.removeItem(VAULT_KEY);
+    }
+    updateVaultBtn();
+    if (!VAULT.key && location.hash.startsWith('#/practice')) router();
+  }
+
   // ================= Boot =================
   updateTopbar();
   router();
+  initVault();
   if (!localStorage.getItem(KEY + '_welcomed')) {
     localStorage.setItem(KEY + '_welcomed', '1');
     setTimeout(() => openSettings(true), 600);
