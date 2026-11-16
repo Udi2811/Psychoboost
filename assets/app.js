@@ -11,6 +11,14 @@
   const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
   const topicById = id => TOPICS.find(t => t.id === id);
   const domainOf = q => topicById(q.t).domain;
+  // Private book bank: only present on the local copy (private/ is never uploaded)
+  const BOOK_COUNT = (() => {
+    const bank = Array.isArray(window.PRIVATE_BANK) ? window.PRIVATE_BANK.filter(q => topicById(q.t)) : [];
+    QUESTIONS.push(...bank);
+    return bank.length;
+  })();
+  const isBook = q => q.src === 'book';
+  const bookTag = q => isBook(q) ? `<span class="book-tag">📘 ${esc(q.ch.replace(/^\d+\s*-\s*/, ''))} · ${esc(q.set)} · שאלה ${q.n}</span>` : '';
 
   function mulberry32(a) {
     return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
@@ -385,7 +393,7 @@
       };
       renderVids();
     } else {
-      const qs = shuffle(QUESTIONS.filter(q => q.t === id));
+      const qs = shuffle(QUESTIONS.filter(q => q.t === id)).slice(0, 20);
       if (!qs.length) { body.innerHTML = '<p class="muted">אין שאלות לנושא זה.</p>'; return; }
       runQuiz(body, qs, { title: t.title });
     }
@@ -393,6 +401,7 @@
 
   // ---------- Quiz engine (practice mode with instant feedback) ----------
   function optButtons(q, cls = 'opt') {
+    if (isBook(q)) return q.o.map((o, i) => `<button class="${cls}" data-i="${i}"><span class="k">${i + 1}</span><span>תשובה (${i + 1})</span></button>`).join('');
     return q.o.map((o, i) => `<button class="${cls}" data-i="${i}"><span class="k">${i + 1}</span><span>${o}</span></button>`).join('');
   }
 
@@ -408,6 +417,7 @@
         <div class="bar" style="margin-bottom:14px"><div style="width:${idx / qs.length * 100}%;background:var(--grad)"></div></div>
         <div class="card q-card">
           <div class="q-meta"><span>שאלה ${idx + 1} מתוך ${qs.length}${q.d === 3 ? ' · <b style="color:var(--pink)">🔥 רמת 780+</b>' : ''}</span><span class="pace" id="pace">⏱️ 0:00 / 1:00</span><span>${t.icon} ${t.title}</span></div>
+          ${bookTag(q)}
           <div class="q-text">${q.q}</div>
           <div class="opts">${optButtons(q)}</div>
           <div id="afterQ"></div>
@@ -470,13 +480,16 @@
         <label>כמות <select id="pCnt"><option>5</option><option selected>10</option><option>15</option><option>20</option></select></label>
         <label>מצב <select id="pMode"><option value="smart">🧠 חכם (מותאם אישית)</option><option value="random">🎲 אקראי</option><option value="mistakes">🔁 רק טעויות</option></select></label>
         <label>רמה <select id="pLvl"><option value="all">הכול</option><option value="hard">🔥 רמת 780+ בלבד</option><option value="base">בסיס ובינוני</option></select></label>
+        ${BOOK_COUNT ? `<label>מקור <select id="pSrc"><option value="all">הכול</option><option value="book">📘 מאגר הספרים (${BOOK_COUNT})</option><option value="site">שאלות האתר</option></select></label>` : ''}
         <span class="spacer"></span><button class="btn" id="pGo">התחל ←</button>
       </div>
       <div id="pBody" class="mt"></div>`;
     $('#pGo').onclick = () => {
       const d = $('#pDom').value, n = +$('#pCnt').value, mode = $('#pMode').value, lvl = $('#pLvl').value;
+      const src = $('#pSrc') ? $('#pSrc').value : 'all';
       let pool = QUESTIONS.filter(q => (d === 'all' || domainOf(q) === d) && q.t !== 'v-writing'
-        && (lvl === 'all' || (lvl === 'hard') === (q.d === 3)));
+        && (lvl === 'all' || (lvl === 'hard') === (q.d === 3))
+        && (src === 'all' || (src === 'book') === isBook(q)));
       if (mode === 'mistakes') {
         pool = pool.filter(q => S.answers[q.id] && S.answers[q.id].last === false);
         if (!pool.length) return toast('אין טעויות פתוחות – כל הכבוד! 🎉', 'good');
@@ -705,9 +718,9 @@
         <h2 class="mt">🔍 סקירת תשובות</h2>
         ${E.chapters.filter(C => C.qs.length).map(C => `<h3>${C.title}</h3>` + C.qs.map((q, i) => {
           const a = answers[E.chapters.indexOf(C)][i], ok = a === q.a;
-          return `<div class="card q-card"><div class="q-meta"><span>שאלה ${i + 1} · ${ok ? '✅ נכון' : a == null ? '⬜ לא נענתה' : '❌ שגוי'}</span><span>${topicById(q.t).title}</span></div>
+          return `<div class="card q-card"><div class="q-meta"><span>שאלה ${i + 1} · ${ok ? '✅ נכון' : a == null ? '⬜ לא נענתה' : '❌ שגוי'}</span><span>${topicById(q.t).title}</span></div>${bookTag(q)}
             <div class="q-text">${q.q}</div>
-            <div class="opts">${q.o.map((o, k) => `<div class="opt ${k === q.a ? 'correct' : k === a ? 'wrong' : ''}"><span class="k">${k + 1}</span><span>${o}</span></div>`).join('')}</div>
+            <div class="opts">${q.o.map((o, k) => `<div class="opt ${k === q.a ? 'correct' : k === a ? 'wrong' : ''}"><span class="k">${k + 1}</span><span>${isBook(q) ? `תשובה (${k + 1})` : o}</span></div>`).join('')}</div>
             <div class="explain ${ok ? '' : 'bad'}">${q.e}</div></div>`;
         }).join('')).join('')}`;
     };
@@ -865,7 +878,7 @@
           ? `<h2>${C.title} <small style="font-weight:400">(${C.minutes} דקות)</small></h2><p>${esc(C.prompt)}</p>${'<div style="border-bottom:1px solid #bbb;height:30px"></div>'.repeat(28)}<div class="page-break"></div>`
           : `<h2>${C.title}${C.minutes ? ` <small style="font-weight:400">(${C.minutes} דקות)</small>` : ''}</h2>` +
           C.qs.map(q => `<div class="p-q"><b>${++num}.</b> ${q.q}
-            <div class="p-opts">${q.o.map((o, i) => `<div>(${i + 1}) ${o}</div>`).join('')}</div></div>`).join('')).join('') +
+            ${isBook(q) ? '' : `<div class="p-opts">${q.o.map((o, i) => `<div>(${i + 1}) ${o}</div>`).join('')}</div>`}</div>`).join('')).join('') +
         `<div class="page-break"></div><h2>גיליון תשובות</h2><div class="bubbles">${Array.from({ length: num }, (_, i) => `<div><b>${i + 1}.</b> ${[1, 2, 3, 4].map(k => `<span>${k}</span>`).join('')}</div>`).join('')}</div>` +
         `<div class="page-break" id="keyPage"><h2>🔑 פתרונות והסברים</h2>${(() => { let n = 0; return chapters.map(C => C.qs.map(q => `<p><b>${++n}.</b> תשובה (${q.a + 1}) – ${q.e}</p>`).join('')).join(''); })()}</div>`;
     }

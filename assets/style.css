@@ -177,6 +177,9 @@ a.tab { text-decoration: none; }
 .q-meta { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
 .pace { font-variant-numeric: tabular-nums; padding: 0 10px; border-radius: 8px; }
 .pace.over { color: var(--red); background: rgba(255,107,107,.12); font-weight: 700; }
+.bk-img { display: block; max-width: 100%; margin: 8px auto; border-radius: 10px; background: #fff; }
+.book-tag { display: inline-block; margin-bottom: 8px; padding: 3px 10px; border-radius: 99px; font-size: 12px; background: rgba(77,216,255,.12); border: 1px solid rgba(77,216,255,.3); color: var(--cyan); }
+.bk-ask { font-size: 17px; margin-bottom: 6px; color: var(--gold); }
 .q-text { font-size: 18px; margin-bottom: 14px; }
 .q-text .passage { font-size: 15px; background: rgba(0,0,0,.25); padding: 14px 18px; border-radius: 12px; max-height: 320px; overflow: auto; margin-bottom: 12px; }
 .data-table { border-collapse: collapse; margin: 8px 0 12px; min-width: 300px; }
