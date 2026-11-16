@@ -11,7 +11,6 @@
   const fmtTime = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
   const topicById = id => TOPICS.find(t => t.id === id);
   const domainOf = q => topicById(q.t).domain;
-  const isEn = q => domainOf(q) === 'english';
 
   function mulberry32(a) {
     return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
@@ -300,7 +299,7 @@
 
   function course() {
     view.innerHTML = `<h1>🎓 הקורס המלא</h1>
-      <p class="muted">החל מדצמבר 2026 הבחינה הפסיכומטרית כוללת שני תחומים – <b>חשיבה מילולית</b> ו<b>חשיבה כמותית</b>. האנגלית נבחנת בנפרד בבחינת אמירנט, ולכן מופיעה כאן כמודול משלים.</p>
+      <p class="muted">החל מדצמבר 2026 הבחינה הפסיכומטרית כוללת שני תחומים – <b>חשיבה מילולית</b> ו<b>חשיבה כמותית</b>. הקורס מתמקד בשני התחומים האלה.</p>
       ${Object.entries(DOMAINS).map(([d, D]) => `
         <div class="domain-head"><div class="ico" style="background:${D.color}33">${D.icon}</div><div><h2 style="margin:0">${D.title}</h2><div class="muted">${D.desc}</div></div></div>
         <div class="grid g3">
@@ -394,8 +393,7 @@
 
   // ---------- Quiz engine (practice mode with instant feedback) ----------
   function optButtons(q, cls = 'opt') {
-    const dir = isEn(q) ? ' dir="ltr"' : '';
-    return q.o.map((o, i) => `<button class="${cls}" data-i="${i}"${dir}><span class="k">${i + 1}</span><span>${o}</span></button>`).join('');
+    return q.o.map((o, i) => `<button class="${cls}" data-i="${i}"><span class="k">${i + 1}</span><span>${o}</span></button>`).join('');
   }
 
   function runQuiz(container, qs, opts = {}) {
@@ -410,7 +408,7 @@
         <div class="bar" style="margin-bottom:14px"><div style="width:${idx / qs.length * 100}%;background:var(--grad)"></div></div>
         <div class="card q-card">
           <div class="q-meta"><span>שאלה ${idx + 1} מתוך ${qs.length}${q.d === 3 ? ' · <b style="color:var(--pink)">🔥 רמת 780+</b>' : ''}</span><span class="pace" id="pace">⏱️ 0:00 / 1:00</span><span>${t.icon} ${t.title}</span></div>
-          <div class="q-text"${isEn(q) ? ' dir="ltr"' : ''}>${q.q}</div>
+          <div class="q-text">${q.q}</div>
           <div class="opts">${optButtons(q)}</div>
           <div id="afterQ"></div>
         </div>`;
@@ -541,10 +539,7 @@
       const qs = [...draw('verbal', 10, rnd, 1)[0], ...draw('quant', 10, rnd, 1)[0]];
       return { id, title: `אתגר ${TARGET}+`, chapters: [ch(`אתגר ${TARGET}+ – שאלות קשות בלבד`, 'mixed', qs, 20)] };
     }
-    if (id === 'E') {
-      return { id, title: 'מבחן אנגלית (הכנה לאמירנט)', chapters: [ch('English', 'english', draw('english', 20, mulberry32(7), 0.3)[0], 20)] };
-    }
-    const rq = shuffle(QUESTIONS.filter(q => q.t !== 'v-writing' && domainOf(q) !== 'english')).slice(0, 10);
+    const rq = shuffle(QUESTIONS.filter(q => q.t !== 'v-writing')).slice(0, 10);
     return { id: 'Q', title: 'מבחן בזק', chapters: [ch('מבחן בזק – מעורב', 'mixed', rq, 10)] };
   }
 
@@ -553,8 +548,7 @@
     ['A', '🅰️', 'סימולציה א', 'פרק מילולי + פרק כמותי · 20 שאלות ב-20 דקות כל פרק'],
     ['B', '🅱️', 'סימולציה ב', 'סט שאלות אחר · אותו מבנה ואותם זמנים'],
     ['H', '🔥', `אתגר ${TARGET}+`, '20 שאלות ברמה הקשה ביותר · 20 דקות'],
-    ['Q', '⚡', 'מבחן בזק', '10 שאלות מעורבות · 10 דקות · משתנה בכל פעם'],
-    ['E', '🌍', 'אנגלית (אמירנט)', '20 שאלות · 20 דקות']
+    ['Q', '⚡', 'מבחן בזק', '10 שאלות מעורבות · 10 דקות · משתנה בכל פעם']
   ];
 
   function exams() {
@@ -635,7 +629,7 @@
         <div id="qList">${C.qs.map((q, i) => `
           <div class="card q-card" id="eq${i}">
             <div class="q-meta"><span>שאלה ${i + 1}</span><button class="flag-btn" data-f="${i}">🚩 סמן לחזרה</button></div>
-            <div class="q-text"${isEn(q) ? ' dir="ltr"' : ''}>${q.q}</div>
+            <div class="q-text">${q.q}</div>
             <div class="opts" data-q="${i}">${optButtons(q)}</div>
           </div>`).join('')}</div>
         <div class="row"><button class="btn" id="endCh">${ci + 1 < E.chapters.length ? 'סיים פרק ועבור לבא ←' : 'הגש מבחן 🏁'}</button></div>`;
@@ -676,7 +670,7 @@
 
     const results = () => {
       let right = 0, total = 0;
-      const per = { verbal: [0, 0], quant: [0, 0], english: [0, 0] };
+      const per = { verbal: [0, 0], quant: [0, 0] };
       E.chapters.forEach((C, c) => C.qs.forEach((q, i) => {
         const ok = answers[c][i] === q.a, d = domainOf(q);
         per[d][1]++; if (ok) { per[d][0]++; right++; }
@@ -712,8 +706,8 @@
         ${E.chapters.filter(C => C.qs.length).map(C => `<h3>${C.title}</h3>` + C.qs.map((q, i) => {
           const a = answers[E.chapters.indexOf(C)][i], ok = a === q.a;
           return `<div class="card q-card"><div class="q-meta"><span>שאלה ${i + 1} · ${ok ? '✅ נכון' : a == null ? '⬜ לא נענתה' : '❌ שגוי'}</span><span>${topicById(q.t).title}</span></div>
-            <div class="q-text"${isEn(q) ? ' dir="ltr"' : ''}>${q.q}</div>
-            <div class="opts">${q.o.map((o, k) => `<div class="opt ${k === q.a ? 'correct' : k === a ? 'wrong' : ''}"${isEn(q) ? ' dir="ltr"' : ''}><span class="k">${k + 1}</span><span>${o}</span></div>`).join('')}</div>
+            <div class="q-text">${q.q}</div>
+            <div class="opts">${q.o.map((o, k) => `<div class="opt ${k === q.a ? 'correct' : k === a ? 'wrong' : ''}"><span class="k">${k + 1}</span><span>${o}</span></div>`).join('')}</div>
             <div class="explain ${ok ? '' : 'bad'}">${q.e}</div></div>`;
         }).join('')).join('')}`;
     };
@@ -801,8 +795,8 @@
   }
 
   // ---------- Flashcards (Leitner) ----------
-  function cards(deck = 'he') {
-    if (!FLASHCARDS[deck]) deck = 'he';
+  function cards() {
+    const deck = 'he';
     const list = FLASHCARDS[deck];
     const key = i => `${deck}:${list[i][0]}`;
     const box = i => S.cards[key(i)] || 0;
@@ -814,7 +808,6 @@
     };
     const mastered = () => list.filter((_, i) => box(i) >= 3).length;
     view.innerHTML = `<h1>🃏 כרטיסיות אוצר מילים</h1>
-      <div class="tabs"><a class="tab ${deck === 'he' ? 'active' : ''}" href="#/cards/he">עברית</a><a class="tab ${deck === 'en' ? 'active' : ''}" href="#/cards/en">English</a></div>
       <p class="muted">לחצו על הכרטיס כדי להפוך אותו. "ידעתי" מקדם את הכרטיס – "עוד לא" מחזיר אותו להתחלה (שיטת לייטנר).</p>
       <div class="card"><div class="row"><span>שליטה:</span><b id="mst"></b><span class="spacer"></span><span class="muted" id="boxInfo"></span></div>
       <div class="bar mt"><div id="mBar" style="background:var(--grad)"></div></div></div>
@@ -825,7 +818,6 @@
       pick();
       const f = $('#flash'); f.classList.remove('flipped');
       $('#fFront').textContent = list[cur][0];
-      $('#fFront').dir = deck === 'en' ? 'ltr' : 'rtl';
       setTimeout(() => { $('#fBack').textContent = list[cur][1]; }, 200);
       const m = mastered();
       $('#mst').textContent = `${m} / ${list.length}`;
@@ -846,7 +838,7 @@
   // ---------- Printable ----------
   function printView(sel = 'F') {
     const options = [
-      ['F', 'סימולציה מלאה (כתיבה + 4 פרקים)'], ['A', 'סימולציה א'], ['B', 'סימולציה ב'], ['H', `אתגר ${TARGET}+`], ['E', 'אנגלית (אמירנט)'],
+      ['F', 'סימולציה מלאה (כתיבה + 4 פרקים)'], ['A', 'סימולציה א'], ['B', 'סימולציה ב'], ['H', `אתגר ${TARGET}+`],
       ...TOPICS.filter(t => t.id !== 'v-writing').map(t => [`t:${t.id}`, `דף עבודה: ${t.title}`]),
       ['essay', 'דף מטלת כתיבה']
     ];
@@ -872,7 +864,7 @@
         chapters.map(C => C.type === 'writing'
           ? `<h2>${C.title} <small style="font-weight:400">(${C.minutes} דקות)</small></h2><p>${esc(C.prompt)}</p>${'<div style="border-bottom:1px solid #bbb;height:30px"></div>'.repeat(28)}<div class="page-break"></div>`
           : `<h2>${C.title}${C.minutes ? ` <small style="font-weight:400">(${C.minutes} דקות)</small>` : ''}</h2>` +
-          C.qs.map(q => `<div class="p-q"${isEn(q) ? ' dir="ltr"' : ''}><b>${++num}.</b> ${q.q}
+          C.qs.map(q => `<div class="p-q"><b>${++num}.</b> ${q.q}
             <div class="p-opts">${q.o.map((o, i) => `<div>(${i + 1}) ${o}</div>`).join('')}</div></div>`).join('')).join('') +
         `<div class="page-break"></div><h2>גיליון תשובות</h2><div class="bubbles">${Array.from({ length: num }, (_, i) => `<div><b>${i + 1}.</b> ${[1, 2, 3, 4].map(k => `<span>${k}</span>`).join('')}</div>`).join('')}</div>` +
         `<div class="page-break" id="keyPage"><h2>🔑 פתרונות והסברים</h2>${(() => { let n = 0; return chapters.map(C => C.qs.map(q => `<p><b>${++n}.</b> תשובה (${q.a + 1}) – ${q.e}</p>`).join('')).join(''); })()}</div>`;
@@ -1061,8 +1053,7 @@
       ['https://www.nite.org.il/two-domain-psychometric-entrance-test/format-2/', 'חשיבה מילולית – הסברים', 'מטלת הכתיבה, אנלוגיות ועוד'],
       ['https://www.nite.org.il/two-domain-psychometric-entrance-test/format-4/', 'חשיבה כמותית – הסברים', 'סוגי השאלות בתחום הכמותי'],
       ['https://www.nite.org.il/wp-content/uploads/2020/07/Verbal-Reasoning-HE_acc.pdf', 'חוברת דוגמאות – חשיבה מילולית (PDF)', 'דוגמאות והסברים רשמיים'],
-      ['https://www.nite.org.il/two-domain-psychometric-entrance-test/scores/calculation/', 'איך מחושב הציון', 'שקלול התחומים וסולם 200–800'],
-      ['https://www.nite.org.il/other-tests/amirnet/', 'בחינת אמירנט', 'בחינת האנגלית הנפרדת']
+      ['https://www.nite.org.il/two-domain-psychometric-entrance-test/scores/calculation/', 'איך מחושב הציון', 'שקלול התחומים וסולם 200–800']
     ];
     view.innerHTML = `<h1>🔗 מקורות, סרטונים וטיפים</h1>
       <div class="card"><h3 style="margin-top:0">🏛️ מקורות רשמיים (מומלץ מאוד!)</h3>

@@ -1,8 +1,7 @@
 // תוכן הקורס: נושאים, שאלות, כרטיסיות, הלכות ופינת הפסקה
 window.DOMAINS = {
   verbal: { title: `חשיבה מילולית`, icon: `📚`, color: `#ff5c8a`, desc: `מטלת כתיבה, אנלוגיות, חשיבה לוגית, הבנת הנקרא ואוצר מילים` },
-  quant: { title: `חשיבה כמותית`, icon: `📐`, color: `#4dd8ff`, desc: `אלגברה, בעיות מילוליות, גיאומטריה, קומבינטוריקה והסקה מתרשים` },
-  english: { title: `אנגלית (אמירנט)`, icon: `🌍`, color: `#ffc94d`, desc: `החל מדצמבר 2026 נבחנת בנפרד בבחינת אמירנט – כדאי להתכונן במקביל` }
+  quant: { title: `חשיבה כמותית`, icon: `📐`, color: `#4dd8ff`, desc: `אלגברה, בעיות מילוליות, גיאומטריה, קומבינטוריקה והסקה מתרשים` }
 };
 
 window.TOPICS = [
@@ -371,78 +370,6 @@ window.TOPICS = [
     videos: [
       { t: `אוצר מילים לפסיכומטרי`, q: `פסיכומטרי אוצר מילים עברית` }
     ]
-  },
-  // ---------------- אנגלית ----------------
-  {
-    id: `e-sentence`, domain: `english`, title: `Sentence Completion`, icon: `🧩`,
-    summary: `השלמת משפטים לפי הקשר ומילות קישור`,
-    learn: `
-<h3>השיטה</h3>
-<ol>
-  <li>קראו את המשפט <b>בלי</b> התשובות ונסו לנחש מילה בעצמכם.</li>
-  <li>חפשו מילות קישור: <b>although, despite, however</b> (ניגוד); <b>because, therefore, so</b> (סיבה/תוצאה).</li>
-  <li>בחרו את התשובה הקרובה ביותר לניחוש שלכם.</li>
-</ol>`,
-    tricks: [
-      `<b>Despite / Although</b> = ניגוד בין חלקי המשפט.`,
-      `<b>so ... that</b> = תוצאה של עוצמה.`,
-      `<b>אוצר מילים</b> הוא 80% מההצלחה – תרגלו כרטיסיות באנגלית.`
-    ],
-    videos: [
-      { t: `Sentence Completion – טיפים`, q: `אמירנט sentence completion` }
-    ]
-  },
-  {
-    id: `e-restate`, domain: `english`, title: `Restatements`, icon: `🔄`,
-    summary: `ניסוח מחדש של משפט באותה משמעות`,
-    learn: `
-<h3>השיטה</h3>
-<p>תרגמו את המשפט לעברית בראש, זהו את <b>המשמעות המדויקת</b> (מי עשה מה, האם יש שלילה, תנאי, השוואה) – וחפשו תשובה עם אותה משמעות בדיוק.</p>
-<div class="formula-grid">
-  <div class="formula">Hardly / Barely = כמעט לא</div>
-  <div class="formula">Had I known… = אילו ידעתי (ולא ידעתי)</div>
-  <div class="formula">Not only… but also = לא רק… אלא גם</div>
-  <div class="formula">except = חוץ מ</div>
-</div>`,
-    tricks: [
-      `<b>היזהרו מתשובות עם אותן מילים</b> – לרוב הן מלכודת עם משמעות שונה.`,
-      `<b>בדקו שלילה ותנאי</b> – שם נופלים רוב הנבחנים.`
-    ],
-    videos: [
-      { t: `Restatements – שיטה`, q: `אמירנט restatements` }
-    ]
-  },
-  {
-    id: `e-reading`, domain: `english`, title: `Reading Comprehension`, icon: `📰`,
-    summary: `קטעי קריאה באנגלית`,
-    learn: `
-<h3>השיטה</h3>
-<ol>
-  <li>קראו את המשפט הראשון בכל פסקה – הוא לרוב משפט הנושא.</li>
-  <li>קראו שאלה ⟸ חזרו לפסקה הרלוונטית ⟸ מצאו הוכחה.</li>
-  <li>The main purpose / main idea – תשובה שמכסה את <b>כל</b> הקטע.</li>
-</ol>`,
-    tricks: [
-      `<b>לא צריך להבין כל מילה</b> – רק את מה שהשאלה צריכה.`,
-      `<b>Paraphrase:</b> התשובה הנכונה לרוב מנוסחת אחרת מהטקסט.`
-    ],
-    videos: [
-      { t: `Reading Comprehension`, q: `אמירנט reading comprehension טיפים` }
-    ]
-  },
-  {
-    id: `e-vocab`, domain: `english`, title: `Vocabulary`, icon: `🔤`,
-    summary: `מילים נפוצות במבחן`,
-    learn: `
-<h3>אוצר מילים באנגלית</h3>
-<p>תרגלו את הכרטיסיות באנגלית בכל יום. מילה שלא הכרתם עוברת לקופסה הראשונה וחוזרת שוב – זו שיטת לייטנר (חזרה מרווחת).</p>`,
-    tricks: [
-      `<b>Prefixes:</b> un-, in-, dis- = שלילה; re- = שוב; pre- = לפני.`,
-      `<b>Suffixes:</b> -less = בלי; -ful = מלא; -able = אפשרי.`
-    ],
-    videos: [
-      { t: `אוצר מילים לאמירנט`, q: `אמירנט אוצר מילים` }
-    ]
   }
 ];
 
@@ -451,12 +378,6 @@ const READING_HE = `
 <p>(1) מחקרים בתחום מדעי המוח מראים כי השינה איננה מצב של מנוחה סבילה בלבד. במהלך השינה, ובייחוד בשלבי השינה העמוקה, המוח "משחזר" את המידע שנלמד במהלך היום ומעביר חלק ממנו מאחסון זמני לאחסון ארוך טווח. תהליך זה מכונה "גיבוש זיכרון".</p>
 <p>(2) בניסויים שבהם התבקשו נבדקים ללמוד רשימת מילים, אלה שישנו לילה שלם לאחר הלמידה זכרו מילים רבות יותר מאלה שנשארו ערים, אף שמשך הזמן שחלף מהלמידה ועד הבדיקה היה זהה בשתי הקבוצות.</p>
 <p>(3) עם זאת, החוקרים מזהירים מפני מסקנה פשטנית: לא כל שינה מועילה באותה מידה, ונראה כי איכות השינה חשובה לא פחות ממשכה. יתרה מזו, שינה אינה יכולה לפצות על למידה שטחית – המוח מגבש היטב בעיקר מידע שעובד לעומק בשעות הערות.</p></div>`;
-
-const READING_EN = `
-<div class="passage" dir="ltr"><h4>Reading Passage: Honeybees</h4>
-<p>Honeybees are essential to modern agriculture. As they move from flower to flower collecting nectar, they transfer pollen, allowing many plants to produce fruit and seeds. A large share of the crops we eat depends, at least in part, on such pollination.</p>
-<p>In recent decades, however, beekeepers in many countries have reported unusually large losses of colonies. Scientists believe that no single cause is responsible; instead, a combination of factors – including parasites, pesticides, and the loss of natural habitats – seems to be weakening the bees.</p>
-<p>Some farmers have responded by planting wildflowers near their fields, hoping to provide bees with a more varied diet.</p></div>`;
 
 const SALES_TABLE = `
 <table class="data-table"><caption>מכירות חברה לפי רבעונים (באלפי ₪)</caption>
@@ -545,25 +466,7 @@ window.QUESTIONS = [
   { id: `vv3`, t: `v-words`, q: `מה פירוש הביטוי "אבן נגף"?`, o: [`מכשול`, `יסוד איתן`, `מזכרת`, `סמל לניצחון`], a: 0, e: `"אבן נגף" = מכשול (נגף – מכה, היתקלות).` },
   { id: `vv4`, t: `v-words`, q: `מה פירוש המילה "מופרך"?`, o: [`מוכח היטב`, `חסר בסיס, שאינו נכון`, `מורכב מאוד`, `מפורסם`], a: 1, e: `טענה מופרכת = טענה שהוכח שאין לה בסיס.` },
   { id: `vv5`, t: `v-words`, q: `מה פירוש הביטוי "שפר עליו גורלו"?`, o: [`התמזל מזלו`, `הורע מצבו`, `שינה את דעתו`, `ויתר על חלומו`], a: 0, e: `"שפר" = הוטב. גורלו הוטב – התמזל מזלו.` },
-  { id: `vv6`, t: `v-words`, q: `מה פירוש המילה "עמום"?`, o: [`חד ובהיר`, `כבד משקל`, `לא ברור, מטושטש`, `עמוק`], a: 2, e: `"עמום" = לא ברור (אור עמום, משמעות עמומה).` },
-
-  // ---- English ----
-  { id: `es1`, t: `e-sentence`, q: `Despite the heavy rain, the match was not ______.`, o: [`played`, `canceled`, `enjoyed`, `watched`], a: 1, e: `Despite = ניגוד: למרות הגשם המשחק לא בוטל.` },
-  { id: `es2`, t: `e-sentence`, q: `The scientist's theory was so ______ that few people could understand it.`, o: [`simple`, `complex`, `popular`, `brief`], a: 1, e: `so ... that – התיאוריה כל כך מורכבת שמעטים הבינו.` },
-  { id: `es3`, t: `e-sentence`, q: `She was ______ about her work, checking every detail three times.`, o: [`careless`, `meticulous`, `indifferent`, `hostile`], a: 1, e: `meticulous = קפדני.` },
-  { id: `es4`, t: `e-sentence`, q: `Because the drug had several ______ side effects, doctors stopped prescribing it.`, o: [`beneficial`, `harmful`, `expected`, `pleasant`], a: 1, e: `Because – סיבה: תופעות לוואי מזיקות ⟸ הפסיקו לרשום.` },
-  { id: `es5`, t: `e-sentence`, q: `The ancient city was ______ by an earthquake, leaving only ruins.`, o: [`built`, `destroyed`, `discovered`, `admired`], a: 1, e: `leaving only ruins – נשארו רק הריסות ⟸ destroyed.` },
-  { id: `er1`, t: `e-restate`, q: `Hardly anyone attended the lecture.`, o: [`Nobody liked the lecture.`, `The lecture was hard to attend.`, `Very few people came to the lecture.`, `Many people attended the lecture.`], a: 2, e: `Hardly anyone = כמעט אף אחד.` },
-  { id: `er2`, t: `e-restate`, q: `Had she known about the delay, she would have taken a later train.`, o: [`She knew about the delay and took a later train.`, `She didn't know about the delay, so she didn't take a later train.`, `The train was delayed because she was late.`, `She always takes the later train.`], a: 1, e: `Had she known = אילו ידעה (ולא ידעה).` },
-  { id: `er3`, t: `e-restate`, q: `The museum is open to the public except on Mondays.`, o: [`The museum is open only on Mondays.`, `The public can visit the museum every day but Monday.`, `The museum is closed to the public most days.`, `On Mondays the museum is less crowded.`], a: 1, e: `except on Mondays = חוץ מימי שני.` },
-  { id: `er4`, t: `e-restate`, q: `Not only did he finish first, but he also broke the record.`, o: [`He finished first but did not break the record.`, `He broke the record although he did not win.`, `He won the race and also set a new record.`, `He finished first only because of the record.`], a: 2, e: `Not only… but also = גם וגם.` },
-  { id: `ec1`, t: `e-reading`, q: `${READING_EN}<p dir="ltr">The main purpose of the passage is to:</p>`, o: [`explain how honey is produced`, `describe the importance of honeybees and a threat they face`, `argue that pesticides should be banned`, `compare different types of bees`], a: 1, e: `The passage covers importance (par. 1) + threat (par. 2) + response (par. 3).` },
-  { id: `ec2`, t: `e-reading`, q: `${READING_EN}<p dir="ltr">According to the passage, scientists believe that colony losses are caused by:</p>`, o: [`a single parasite`, `a combination of several factors`, `wildflowers`, `beekeepers' mistakes`], a: 1, e: `"no single cause… a combination of factors".` },
-  { id: `ec3`, t: `e-reading`, q: `${READING_EN}<p dir="ltr">Why do some farmers plant wildflowers?</p>`, o: [`To attract tourists`, `To replace their crops`, `To provide bees with a more varied diet`, `To get rid of parasites`], a: 2, e: `"hoping to provide bees with a more varied diet".` },
-  { id: `ev1`, t: `e-vocab`, q: `"abundant" means:`, o: [`rare`, `plentiful`, `dangerous`, `ancient`], a: 1, e: `abundant = שופע, בשפע.` },
-  { id: `ev2`, t: `e-vocab`, q: `"reluctant" means:`, o: [`unwilling`, `eager`, `sudden`, `honest`], a: 0, e: `reluctant = מסתייג, לא רוצה.` },
-  { id: `ev3`, t: `e-vocab`, q: `"inevitable" means:`, o: [`invisible`, `unavoidable`, `unbelievable`, `impossible`], a: 1, e: `inevitable = בלתי נמנע.` },
-  { id: `ev4`, t: `e-vocab`, q: `"deteriorate" means:`, o: [`improve`, `decide`, `become worse`, `disappear`], a: 2, e: `deteriorate = להידרדר.` }
+  { id: `vv6`, t: `v-words`, q: `מה פירוש המילה "עמום"?`, o: [`חד ובהיר`, `כבד משקל`, `לא ברור, מטושטש`, `עמוק`], a: 2, e: `"עמום" = לא ברור (אור עמום, משמעות עמומה).` }
 ];
 
 window.FLASHCARDS = {
@@ -577,16 +480,6 @@ window.FLASHCARDS = {
     [`קלוקל`, `פגום, גרוע`], [`הדדי`, `משותף לשני הצדדים`], [`מובלע`, `כלול בדבר אחר, לא מפורש`],
     [`פרדוקס`, `סתירה פנימית לכאורה`], [`התפכחות`, `התעוררות מאשליה`], [`נרפה`, `עצלן, חסר מרץ`],
     [`מרופט`, `בלוי, משומש מאוד`], [`מעושה`, `לא טבעי, מלאכותי`], [`אבן נגף`, `מכשול`], [`עלה בתוהו`, `נכשל`]
-  ],
-  en: [
-    [`abundant`, `שופע`], [`reluctant`, `מסתייג, לא רוצה`], [`ambiguous`, `דו-משמעי`], [`deteriorate`, `להידרדר`],
-    [`inevitable`, `בלתי נמנע`], [`scarce`, `נדיר, מועט`], [`thrive`, `לשגשג`], [`hostile`, `עוין`],
-    [`diminish`, `להפחית, לקטון`], [`enhance`, `לשפר, להגביר`], [`crucial`, `מכריע, חיוני`], [`obsolete`, `מיושן`],
-    [`vivid`, `חי, ציורי`], [`vague`, `מעורפל`], [`tedious`, `מייגע`], [`eager`, `להוט`], [`fragile`, `שביר`],
-    [`genuine`, `אמיתי, אותנטי`], [`hazard`, `סכנה`], [`imply`, `לרמוז`], [`merely`, `רק, בסך הכול`],
-    [`notion`, `רעיון, מושג`], [`persist`, `להתמיד`], [`precise`, `מדויק`], [`rigid`, `נוקשה`],
-    [`subtle`, `עדין, מעודן`], [`sufficient`, `מספיק`], [`tremendous`, `עצום`], [`ultimately`, `בסופו של דבר`],
-    [`widespread`, `נפוץ`], [`meticulous`, `קפדני`], [`indifferent`, `אדיש`]
   ]
 };
 

@@ -52,13 +52,5 @@ window.QUESTIONS.push(
   { id: `vh17`, d: 3, t: `v-words`, q: `מה פירוש הביטוי "קול קורא במדבר"?`, o: [`קריאה לעזרה בעת סכנה`, `נאום שרבים הקשיבו לו`, `דברים נכונים שאיש אינו מקשיב להם`, `הצהרה רשמית`], a: 2, e: `מי שמתריע אך איש אינו שומע לו.` },
   { id: `vh18`, d: 3, t: `v-words`, q: `מה פירוש המילה "מופלג" (כמו בצירוף "למדן מופלג")?`, o: [`מפוקפק`, `בולט במיוחד, במידה רבה`, `מפלגתי`, `מתחיל`], a: 1, e: `מופלג = רב, ניכר מאוד. מסיח מוכר: "מפלגתי" – דמיון צלילי בלבד.` },
   { id: `vh19`, d: 3, t: `v-words`, q: `מה פירוש הביטוי "דבר והיפוכו"?`, o: [`טיעון משכנע`, `שינוי הדרגתי`, `שתי טענות הסותרות זו את זו`, `חזרה מיותרת`], a: 2, e: `אמירת דבר וגם את ניגודו – סתירה.` },
-  { id: `vh20`, d: 3, t: `v-words`, q: `מה פירוש המילה "מעושה"?`, o: [`מלאכותי, לא טבעי`, `שהושלם בהצלחה`, `מעשי ושימושי`, `עשוי מברזל`], a: 0, e: `"חיוך מעושה" = חיוך מלאכותי. מסיח מוכר: "מעשי" (דמיון שורש).` },
-
-  // ---- English ----
-  { id: `eh1`, d: 3, t: `e-sentence`, q: `The committee's decision was far from ______; several members strongly opposed it.`, o: [`unanimous`, `controversial`, `sudden`, `temporary`], a: 0, e: `far from unanimous = רחוק מפה אחד – ובאמת חלק התנגדו.` },
-  { id: `eh2`, d: 3, t: `e-sentence`, q: `Although the evidence was ______, the jury reached a verdict quickly.`, o: [`overwhelming`, `inconclusive`, `compelling`, `abundant`], a: 1, e: `Although = ניגוד: הראיות לא חד-משמעיות, ובכל זאת הוחלט מהר.` },
-  { id: `eh3`, d: 3, t: `e-restate`, q: `Scarcely had the meeting begun when the fire alarm went off.`, o: [`The meeting started because of the fire alarm.`, `The fire alarm went off just after the meeting started.`, `The fire alarm went off before the meeting.`, `The meeting rarely begins on time.`], a: 1, e: `Scarcely had X when Y = אך התחיל X ומיד Y.` },
-  { id: `eh4`, d: 3, t: `e-restate`, q: `The new policy is anything but popular.`, o: [`The new policy is popular with everyone.`, `The new policy is very unpopular.`, `Nothing about the policy is new.`, `The policy is more popular than anything else.`], a: 1, e: `anything but = כל דבר חוץ מ- ⟸ ממש לא פופולרי.` },
-  { id: `eh5`, d: 3, t: `e-vocab`, q: `"mitigate" means:`, o: [`to worsen`, `to make less severe`, `to postpone`, `to imitate`], a: 1, e: `mitigate = למתן, להקל.` },
-  { id: `eh6`, d: 3, t: `e-vocab`, q: `"ubiquitous" means:`, o: [`unique`, `found everywhere`, `ancient`, `unnecessary`], a: 1, e: `ubiquitous = נוכח בכל מקום.` }
+  { id: `vh20`, d: 3, t: `v-words`, q: `מה פירוש המילה "מעושה"?`, o: [`מלאכותי, לא טבעי`, `שהושלם בהצלחה`, `מעשי ושימושי`, `עשוי מברזל`], a: 0, e: `"חיוך מעושה" = חיוך מלאכותי. מסיח מוכר: "מעשי" (דמיון שורש).` }
 );
